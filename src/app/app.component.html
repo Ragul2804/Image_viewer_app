@@ -1,0 +1,54 @@
+<div class="app-container">
+  <!-- Left Side: Image Display Panel -->
+  <div class="left-panel">
+    <h2>Image Preview</h2>
+    <div *ngIf="currentImages.length > 0; else noImage" class="image-viewer">
+      <img [src]="currentImages[currentIndex]" alt="Selected Image" class="preview-img" />
+      <p class="image-counter">Image {{ currentIndex + 1 }} of {{ currentImages.length }}</p>
+    </div>
+    <ng-template #noImage>
+      <p class="placeholder-text">Right side-l irukkura 'Choose Root Folder' button click panni unga path select pannunga.</p>
+    </ng-template>
+  </div>
+
+  <!-- Right Side: Control & Folder List Panel -->
+  <div class="right-panel">
+    <h2>Folder Navigation</h2>
+    
+    <!-- Folder Picker Button -->
+    <div class="upload-box">
+      <label for="folderInput" class="custom-file-btn">📁 Choose Root Folder</label>
+      <input 
+        id="folderInput" 
+        type="file" 
+        webkitdirectory 
+        directory 
+        multiple 
+        (change)="onFolderSelected($event)" 
+        style="display: none;"
+      />
+    </div>
+
+    <!-- Sub-folders List -->
+    <div class="folders-section">
+      <h3>Sub-folders</h3>
+      <ul class="folder-list" *ngIf="folderNames.length > 0; else emptyList">
+        <li 
+          *ngFor="let folder of folderNames" 
+          [class.active]="folder === selectedFolder"
+          (click)="selectFolder(folder)">
+          📂 {{ folder }} ({{ folders[folder].length }})
+        </li>
+      </ul>
+      <ng-template #emptyList>
+        <p class="sub-placeholder">No sub-folders found.</p>
+      </ng-template>
+    </div>
+
+    <!-- Bottom Navigation Buttons (Previous & Next) -->
+    <div class="nav-buttons" *ngIf="currentImages.length > 0">
+      <button (click)="prevImage()" [disabled]="currentIndex === 0" class="btn">Previous</button>
+      <button (click)="nextImage()" [disabled]="currentIndex === currentImages.length - 1" class="btn">Next</button>
+    </div>
+  </div>
+</div>
