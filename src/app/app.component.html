@@ -3,11 +3,14 @@
   <div class="left-panel">
     <h2>Image Preview</h2>
     <div *ngIf="currentImages.length > 0; else noImage" class="image-viewer">
-      <img [src]="currentImages[currentIndex]" alt="Selected Image" class="preview-img" />
-      <p class="image-counter">Image {{ currentIndex + 1 }} of {{ currentImages.length }}</p>
+      <img [src]="currentImages[currentIndex].url" alt="Selected Image" class="preview-img" />
+      <p class="image-counter">
+        <strong>{{ currentImages[currentIndex].name }}</strong> <br>
+        Image {{ currentIndex + 1 }} of {{ currentImages.length }}
+      </p>
     </div>
     <ng-template #noImage>
-      <p class="placeholder-text">Right side-l irukkura 'Choose Root Folder' button click panni unga path select pannunga.</p>
+      <p class="placeholder-text">Please Choose the Root Folder.</p>
     </ng-template>
   </div>
 
@@ -29,19 +32,32 @@
       />
     </div>
 
-    <!-- Sub-folders List -->
+    <!-- Folders and Images List Section -->
     <div class="folders-section">
-      <h3>Sub-folders</h3>
+      <h3>Folders & Images</h3>
       <ul class="folder-list" *ngIf="folderNames.length > 0; else emptyList">
-        <li 
-          *ngFor="let folder of folderNames" 
-          [class.active]="folder === selectedFolder"
-          (click)="selectFolder(folder)">
-          📂 {{ folder }} ({{ folders[folder].length }})
+        <li *ngFor="let folder of folderNames">
+          <!-- Folder Item -->
+          <div 
+            class="folder-item" 
+            [class.active]="folder === selectedFolder"
+            (click)="selectFolder(folder)">
+            📂 {{ folder }} ({{ folders[folder].length }})
+          </div>
+
+          <!-- Image Names list inside the selected folder -->
+          <ul class="image-name-list" *ngIf="folder === selectedFolder">
+            <li 
+              *ngFor="let img of folders[folder]; let i = index"
+              [class.active-img]="i === currentIndex"
+              (click)="selectImage(i)">
+              - {{ img.name }}
+            </li>
+          </ul>
         </li>
       </ul>
       <ng-template #emptyList>
-        <p class="sub-placeholder">No sub-folders found.</p>
+        <p class="sub-placeholder">No folders found.</p>
       </ng-template>
     </div>
 

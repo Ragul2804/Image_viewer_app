@@ -9,10 +9,10 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  folders: { [folderName: string]: string[] } = {};
+  folders: { [folderName: string]: { name: string, url: string }[] } = {};
   folderNames: string[] = [];
   selectedFolder: string = '';
-  currentImages: string[] = [];
+  currentImages: { name: string, url: string }[] = [];
   currentIndex: number = 0;
 
   onFolderSelected(event: any) {
@@ -25,10 +25,8 @@ export class AppComponent {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      // Image files mattum filter panrom
       if (file.type.startsWith('image/')) {
         const pathParts = file.webkitRelativePath.split('/');
-        // Path structure: RootFolder / SubFolder / image.jpg
         if (pathParts.length >= 2) {
           const folderName = pathParts[pathParts.length - 2];
           
@@ -37,7 +35,10 @@ export class AppComponent {
           }
           
           const imageUrl = URL.createObjectURL(file);
-          this.folders[folderName].push(imageUrl);
+          this.folders[folderName].push({
+            name: file.name,
+            url: imageUrl
+          });
         }
       }
     }
@@ -52,6 +53,10 @@ export class AppComponent {
     this.selectedFolder = folderName;
     this.currentImages = this.folders[folderName] || [];
     this.currentIndex = 0;
+  }
+
+  selectImage(index: number) {
+    this.currentIndex = index;
   }
 
   nextImage() {
